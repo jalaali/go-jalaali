@@ -1,8 +1,8 @@
 # Jalaali
 
-Golang implementation of [https://github.com/jalaali/jalaali-js](Jalaali JS) and [https://github.com/jalaali/jalaali-python][Jalaali Python] implementations of Jalaali (Jalali, Persian, Khayyami, Khorshidi, Shamsi) convertion to Gregorian calendar system and vice-versa.
+Golang implementation of [Jalaali JS](https://github.com/jalaali/jalaali-js) and [Jalaali Python](https://github.com/jalaali/jalaali-python) implementations of Jalaali (Jalali, Persian, Khayyami, Khorshidi, Shamsi) convertion to Gregorian calendar system and vice-versa.
 
-This implementation is based on an [http://www.astro.uni.torun.pl/~kb/Papers/EMP/PersianC-EMP.htm](algorithm by Kazimierz M. Borkowski). Borkowski claims that this algorithm works correctly for 3000 years!
+This implementation is based on an [algorithm by Kazimierz M. Borkowski](http://www.astro.uni.torun.pl/~kb/Papers/EMP/PersianC-EMP.htm). Borkowski claims that this algorithm works correctly for 3000 years!
 
 ## Installation
 
