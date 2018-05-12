@@ -2,12 +2,20 @@ package jalaali
 
 import (
 	"fmt"
+	"time"
 )
 
 var (
 	breaks = [...]int{-61, 9, 38, 199, 426, 686, 756, 818, 1111, 1181, 1210,
 		1635, 2060, 2097, 2192, 2262, 2324, 2394, 2456, 3178}
 )
+
+// FromTime converts Gregorian to Jalaali date. Error is not nil if Jalaali
+// year passed to function is not valid.
+func FromTime(t *time.Time) (int, int, int, error) {
+	jy, jm, jd, err := FromYMD(t.Year(), int(t.Month()), t.Day())
+	return jy, jm, jd, err
+}
 
 // FromYMD converts Gregorian to Jalaali date. Error is not nil if Jalaali
 // year passed to function is not valid.
