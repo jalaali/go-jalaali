@@ -1,7 +1,6 @@
 package jalaali
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -14,7 +13,7 @@ var (
 // year passed to function is not valid.
 func FromTime(t *time.Time) (int, int, int, error) {
 	if t == nil {
-		return 0, 0, 0, fmt.Errorf("Time is nil.")
+		return 0, 0, 0, &ErrorNilReference{}
 	}
 
 	jy, jm, jd, err := FromYMD(t.Year(), int(t.Month()), t.Day())
@@ -124,7 +123,7 @@ func jalCal(jy int) (int, int, int, error) {
 	jump := 0
 
 	if jy < jp || jy >= breaks[bl-1] {
-		return 0, 0, 0, fmt.Errorf("Invalid Jalaali year %v", jy)
+		return 0, 0, 0, &ErrorInvalidYear{jy}
 	}
 
 	// Find the limiting years for the Jalaali year jy.
