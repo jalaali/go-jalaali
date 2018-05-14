@@ -13,6 +13,10 @@ var (
 // FromTime converts Gregorian to Jalaali date. Error is not nil if Jalaali
 // year passed to function is not valid.
 func FromTime(t *time.Time) (int, int, int, error) {
+	if t == nil {
+		return 0, 0, 0, fmt.Errorf("Time is nil.")
+	}
+
 	jy, jm, jd, err := FromYMD(t.Year(), int(t.Month()), t.Day())
 	return jy, jm, jd, err
 }
