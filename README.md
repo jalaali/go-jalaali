@@ -11,5 +11,5 @@ Documentation on API is avaliable [here](https://godoc.org/github.com/733amir/go
 Use `go get` on this repository:
 
 ```sh
-$ go get -u github.com/733amir/go-jalaali
+$ go get -u github.com/jalaali/go-jalaali
 ```
