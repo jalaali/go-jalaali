@@ -1,6 +1,9 @@
 package jalaali
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 func TestFromYMD(t *testing.T) {
 	tests := []struct {
@@ -12,10 +15,10 @@ func TestFromYMD(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		y, m, d, err := FromYMD(test.gy, test.gm, test.gd)
+		y, m, d, err := toJalaali(test.gy, test.gm, test.gd)
 		if err != nil {
 			t.Errorf("%v", err)
-		} else if y != test.jy || m != test.jm || d != test.jd {
+		} else if y != test.jy || m != Month(test.jm) || d != test.jd {
 			t.Errorf("Expected %v/%v/%v got %v/%v%v.", test.jy, test.jm, test.jd, y, m, d)
 		}
 	}
@@ -64,10 +67,8 @@ func TestIsValidDate(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		valid, err := IsValidDate(test.y, test.m, test.d)
-		if err != nil && test.ok {
-			t.Errorf("%v", err)
-		} else if valid != test.ok {
+		valid := IsValidDate(test.y, test.m, test.d)
+		if valid != test.ok {
 			calculated, actual := "", " not"
 			if test.ok {
 				calculated, actual = " not", ""
@@ -124,6 +125,64 @@ func TestMonthLength(t *testing.T) {
 		} else if calculated != test.ml {
 			t.Errorf("Length of %v/%v month is %v but considered %v.",
 				test.y, test.m, test.ml, calculated)
+		}
+	}
+}
+
+func TestJFormat(t *testing.T) {
+	iran, _ := time.LoadLocation("Asia/Tehran")
+
+	tests := []struct {
+		time   time.Time
+		format []string
+		result []string
+	}{
+		{
+			time.Date(2001, 1, 1, 1, 1, 1, 1, iran),
+			[]string{
+				"2006 06", // Year formatting
+				"January Jan 1 01", // Month formatting
+				"Monday Mon 2 _2 02", // Day formatting
+				"15 3 03 4 04 5 05 PM pm", // Hour, Minute, Second formatting
+				".0 .00 .000 .000000 .000000000 .9 .99 .999 .999999 .999999999", // Nanosecond formatting
+			},
+			[]string{
+				"۱۳۷۹ ۷۹", // Year formatting
+				"دی دی ۱۰ ۱۰", // Month formatting
+				"دوشنبه دوشنبه ۱۲ ۱۲ ۱۲", // Day formatting
+				"۰۱ ۱ ۰۱ ۱ ۰۱ ۱ ۰۱ قبل‌ازظهر قبل‌ازظهر", // Hour, Minute, Second formatting
+				".۰ .۰۰ .۰۰۰ .۰۰۰۰۰۰ .۰۰۰۰۰۰۰۰۱     .۰۰۰۰۰۰۰۰۱", // Nanosecond formatting
+			},
+		}, {
+			time.Date(2001, 2, 3, 15, 17, 1, 999999999, iran),
+			[]string{
+				"2006 06", // Year formatting
+				"January Jan 1 01", // Month formatting
+				"Monday Mon 2 _2 02", // Day formatting
+				"15 3 03 4 04 5 05 PM pm", // Hour, Minute, Second formatting
+				".0 .00 .000 .000000 .000000000 .9 .99 .999 .999999 .999999999", // Nanosecond formatting
+			},
+			[]string{
+				"۱۳۷۹ ۷۹", // Year formatting
+				"بهمن بهمن ۱۱ ۱۱", // Month formatting
+				"شنبه شنبه ۱۵ ۱۵ ۱۵", // Day formatting
+				"۱۵ ۳ ۰۳ ۱۷ ۱۷ ۱ ۰۱ بعدازظهر بعدازظهر", // Hour, Minute, Second formatting
+				".۹ .۹۹ .۹۹۹ .۹۹۹۹۹۹ .۹۹۹۹۹۹۹۹۹ .۹ .۹۹ .۹۹۹ .۹۹۹۹۹۹ .۹۹۹۹۹۹۹۹۹", // Nanosecond formatting
+			},
+		},
+	}
+
+	for i, test := range tests {
+		j := From(test.time)
+
+		for f := range test.format {
+			result, err := j.JFormat(test.format[f])
+			if err != nil {
+				t.Error(err)
+			}
+			if result != test.result[f] {
+				t.Error("Bad formatting for test as index: ", i, "\nWanted: ", test.result[f], "\nGot:    ", result)
+			}
 		}
 	}
 }

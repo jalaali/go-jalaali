@@ -1,30 +1,92 @@
 package jalaali
 
 import (
+	"strconv"
 	"time"
 )
+
+// A simple wrapper around Golang default time package. You have all the functionality of
+// default time package and functionalities needed for Jalaali calender.
+type Jalaali struct {
+	time.Time
+}
+
+// From initialize new instance of Jalaali from a time instance.
+func From(t time.Time) Jalaali {
+	return Jalaali{t}
+}
+
+// Now with return Jalaali instance of current time.
+func Now() Jalaali {
+	return From(time.Now())
+}
+
+// A Month specifies a month of the year (Farvardin = 1, ...).
+type Month int
+
+const (
+	Farvardin Month = 1 + iota
+	Ordibehesht
+	Khordad
+	Tir
+	Mordad
+	Shahrivar
+	Mehr
+	Aban
+	Azar
+	Dey
+	Bahman
+	Esfand
+)
+
+var months = []string{
+	"فروردین", "اردیبهشت", "خرداد",
+	"تیر", "مرداد", "شهریور",
+	"مهر", "آبان", "آذر",
+	"دی", "بهمن", "اسفند",
+}
+
+func (m Month) String() string {
+	if Farvardin <= m && m <= Esfand {
+		return months[m-1]
+	}
+	return "%!Month(" + strconv.Itoa(int(m)) + ")"
+}
+
+// A Weekday specifies a day of the week (Shanbe = 0, ...).
+type Weekday int
+
+const (
+	Shanbe Weekday = iota
+	IekShanbe
+	DoShanbe
+	SeShanbe
+	ChaharShanbe
+	PanjShanbe
+	Jome
+)
+
+var days = []string{
+	"شنبه", "یک‌شنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنج‌شنبه", "جمعه",
+}
+
+func (d Weekday) String() string {
+	if Shanbe <= d && d <= Jome {
+		return days[d]
+	}
+	return "%!Weekday(" + strconv.Itoa(int(d)) + ")"
+}
 
 var (
 	breaks = [...]int{-61, 9, 38, 199, 426, 686, 756, 818, 1111, 1181, 1210,
 		1635, 2060, 2097, 2192, 2262, 2324, 2394, 2456, 3178}
 )
 
-// FromTime converts Gregorian to Jalaali date. Error is not nil if Jalaali
+// toJalaali converts Gregorian to Jalaali date. Error is not nil if Jalaali
 // year passed to function is not valid.
-func FromTime(t *time.Time) (int, int, int, error) {
-	if t == nil {
-		return 0, 0, 0, &ErrorNilReference{}
-	}
-
-	jy, jm, jd, err := FromYMD(t.Year(), int(t.Month()), t.Day())
-	return jy, jm, jd, err
-}
-
-// FromYMD converts Gregorian to Jalaali date. Error is not nil if Jalaali
-// year passed to function is not valid.
-func FromYMD(gy, gm, gd int) (int, int, int, error) {
+func toJalaali(gy, gm, gd int) (int, Month, int, error) {
 	jy, jm, jd, err := d2j(g2d(gy, gm, gd))
-	return jy, jm, jd, err
+	return jy, Month(jm), jd, err
 }
 
 // ToGregorian converts Jalaali to Gregorian date. Error is not nil if Jalaali
@@ -41,14 +103,14 @@ func ToGregorian(jy, jm, jd int) (int, int, int, error) {
 
 // IsValidDate take Jalaali date and return true if it is valid,
 // otherwise false.
-func IsValidDate(jy, jm, jd int) (bool, error) {
+func IsValidDate(jy, jm, jd int) bool {
 	d, err := MonthLength(jy, jm)
 	if err != nil {
-		return false, err
+		return false
 	}
 	return -61 <= jy && jy <= 3177 &&
 		1 <= jm && jm <= 12 &&
-		1 <= jd && jd <= d, nil
+		1 <= jd && jd <= d
 }
 
 // MonthLength take Jalaali date and return length of that specific
