@@ -74,7 +74,7 @@ func (j Jalaali) jAppendFormat(b []byte, layout string) ([]byte, error) {
 		// Compute year, month, day if needed.
 		if year < 0 && std&stdNeedDate != 0 {
 			var err error
-			year, month, day, err = toJalaali(j.Year(), int(j.Month()), j.Day())
+			year, month, day, err = ToJalaali(j.Year(), int(j.Month()), j.Day())
 			if err != nil {
 				return b, err
 			}

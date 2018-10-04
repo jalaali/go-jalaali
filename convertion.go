@@ -5,16 +5,16 @@ var (
 		1635, 2060, 2097, 2192, 2262, 2324, 2394, 2456, 3178}
 )
 
-// toJalaali converts Gregorian to Jalaali date. Error is not nil if Jalaali
+// ToJalaali converts Gregorian to Jalaali date. Error is not nil if Jalaali
 // year passed to function is not valid.
-func toJalaali(gy, gm, gd int) (int, Month, int, error) {
+func ToJalaali(gy, gm, gd int) (int, Month, int, error) {
 	jy, jm, jd, err := d2j(g2d(gy, gm, gd))
 	return jy, Month(jm), jd, err
 }
 
-// toGregorian converts Jalaali to Gregorian date. Error is not nil if Jalaali
+// ToGregorian converts Jalaali to Gregorian date. Error is not nil if Jalaali
 // year passed to function is not valid.
-func toGregorian(jy, jm, jd int) (int, int, int, error) {
+func ToGregorian(jy, jm, jd int) (int, int, int, error) {
 	jdn, err := j2d(jy, jm, jd)
 	if err != nil {
 		return 0, 0, 0, err

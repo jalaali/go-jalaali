@@ -15,7 +15,7 @@ func TestFromYMD(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		y, m, d, err := toJalaali(test.gy, test.gm, test.gd)
+		y, m, d, err := ToJalaali(test.gy, test.gm, test.gd)
 		if err != nil {
 			t.Errorf("%v", err)
 		} else if y != test.jy || m != Month(test.jm) || d != test.jd {
@@ -35,7 +35,7 @@ func TestToGregorian(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		y, m, d, err := toGregorian(test.jy, test.jm, test.jd)
+		y, m, d, err := ToGregorian(test.jy, test.jm, test.jd)
 		if err != nil {
 			t.Errorf("%v", err)
 		} else if y != test.gy || m != test.gm || d != test.gd {
