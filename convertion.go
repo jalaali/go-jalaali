@@ -1,5 +1,7 @@
 package jalaali
 
+import "time"
+
 var (
 	breaks = [...]int{-61, 9, 38, 199, 426, 686, 756, 818, 1111, 1181, 1210,
 		1635, 2060, 2097, 2192, 2262, 2324, 2394, 2456, 3178}
@@ -7,21 +9,21 @@ var (
 
 // ToJalaali converts Gregorian to Jalaali date. Error is not nil if Jalaali
 // year passed to function is not valid.
-func ToJalaali(gy, gm, gd int) (int, Month, int, error) {
-	jy, jm, jd, err := d2j(g2d(gy, gm, gd))
+func ToJalaali(gregorianYear int, gregorianMonth time.Month, gregorianDay int) (int, Month, int, error) {
+	jy, jm, jd, err := d2j(g2d(gregorianYear, int(gregorianMonth), gregorianDay))
 	return jy, Month(jm), jd, err
 }
 
 // ToGregorian converts Jalaali to Gregorian date. Error is not nil if Jalaali
 // year passed to function is not valid.
-func ToGregorian(jy, jm, jd int) (int, int, int, error) {
-	jdn, err := j2d(jy, jm, jd)
+func ToGregorian(jalaaliYear int, jalaaliMonth Month, jalaaliDay int) (int, time.Month, int, error) {
+	jdn, err := j2d(jalaaliYear, int(jalaaliMonth), jalaaliDay)
 	if err != nil {
 		return 0, 0, 0, err
 	}
 
 	gy, gm, gd := d2g(jdn)
-	return gy, gm, gd, nil
+	return gy, time.Month(gm), gd, nil
 }
 
 func j2d(jy, jm, jd int) (jdn int, err error) {
