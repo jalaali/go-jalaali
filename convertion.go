@@ -79,7 +79,7 @@ func jalCal(jy int) (int, int, int, error) {
 	// Find the limiting years for the Jalaali year jy.
 	for i := 1; i < bl; i++ {
 		jm := breaks[i]
-		jump := jm - jp
+		jump = jm - jp
 		if jy < jm {
 			break
 		}
