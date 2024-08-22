@@ -20,9 +20,9 @@ func ToJalaali(gregorianYear int, gregorianMonth time.Month, gregorianDay int) (
 // ToGregorian converts Jalaali to Gregorian date. Error is not nil if Jalaali
 // year passed to function is not valid.
 func ToGregorian(jalaaliYear int, jalaaliMonth Month, jalaaliDay int) (int, time.Month, int, error) {
-	// validate the jalaali month
-	if jalaaliMonth < 1 || jalaaliMonth > 12 {
-		return 0, 0, 0, fmt.Errorf("invalid jalaali month: %d", jalaaliMonth)
+	// validate the jalaali date using the utility function
+	if !IsValidDate(jalaaliYear, int(jalaaliMonth), jalaaliDay) {
+		return 0, 0, 0, fmt.Errorf("invalid jalaali date: year=%d, month=%d, day=%d", jalaaliYear, jalaaliMonth, jalaaliDay)
 	}
 	jdn, err := j2d(jalaaliYear, int(jalaaliMonth), jalaaliDay)
 	if err != nil {
