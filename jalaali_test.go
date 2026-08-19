@@ -140,33 +140,33 @@ func TestJFormat(t *testing.T) {
 		{
 			time.Date(2001, 1, 1, 1, 1, 1, 1, iran),
 			[]string{
-				"2006 06", // Year formatting
-				"January Jan 1 01", // Month formatting
-				"Monday Mon 2 _2 02", // Day formatting
+				"2006 06",                 // Year formatting
+				"January Jan 1 01",        // Month formatting
+				"Monday Mon 2 _2 02",      // Day formatting
 				"15 3 03 4 04 5 05 PM pm", // Hour, Minute, Second formatting
 				".0 .00 .000 .000000 .000000000 .9 .99 .999 .999999 .999999999", // Nanosecond formatting
 			},
 			[]string{
-				"۱۳۷۹ ۷۹", // Year formatting
-				"دی دی ۱۰ ۱۰", // Month formatting
+				"۱۳۷۹ ۷۹",                // Year formatting
+				"دی دی ۱۰ ۱۰",            // Month formatting
 				"دوشنبه دوشنبه ۱۲ ۱۲ ۱۲", // Day formatting
-				"۰۱ ۱ ۰۱ ۱ ۰۱ ۱ ۰۱ قبل‌ازظهر قبل‌ازظهر", // Hour, Minute, Second formatting
+				"۰۱ ۱ ۰۱ ۱ ۰۱ ۱ ۰۱ قبل‌ازظهر قبل‌ازظهر",         // Hour, Minute, Second formatting
 				".۰ .۰۰ .۰۰۰ .۰۰۰۰۰۰ .۰۰۰۰۰۰۰۰۱     .۰۰۰۰۰۰۰۰۱", // Nanosecond formatting
 			},
 		}, {
 			time.Date(2001, 2, 3, 15, 17, 1, 999999999, iran),
 			[]string{
-				"2006 06", // Year formatting
-				"January Jan 1 01", // Month formatting
-				"Monday Mon 2 _2 02", // Day formatting
+				"2006 06",                 // Year formatting
+				"January Jan 1 01",        // Month formatting
+				"Monday Mon 2 _2 02",      // Day formatting
 				"15 3 03 4 04 5 05 PM pm", // Hour, Minute, Second formatting
 				".0 .00 .000 .000000 .000000000 .9 .99 .999 .999999 .999999999", // Nanosecond formatting
 			},
 			[]string{
-				"۱۳۷۹ ۷۹", // Year formatting
-				"بهمن بهمن ۱۱ ۱۱", // Month formatting
+				"۱۳۷۹ ۷۹",            // Year formatting
+				"بهمن بهمن ۱۱ ۱۱",    // Month formatting
 				"شنبه شنبه ۱۵ ۱۵ ۱۵", // Day formatting
-				"۱۵ ۳ ۰۳ ۱۷ ۱۷ ۱ ۰۱ بعدازظهر بعدازظهر", // Hour, Minute, Second formatting
+				"۱۵ ۳ ۰۳ ۱۷ ۱۷ ۱ ۰۱ بعدازظهر بعدازظهر",                          // Hour, Minute, Second formatting
 				".۹ .۹۹ .۹۹۹ .۹۹۹۹۹۹ .۹۹۹۹۹۹۹۹۹ .۹ .۹۹ .۹۹۹ .۹۹۹۹۹۹ .۹۹۹۹۹۹۹۹۹", // Nanosecond formatting
 			},
 		},
@@ -183,6 +183,34 @@ func TestJFormat(t *testing.T) {
 			if result != test.result[f] {
 				t.Error("Bad formatting for test as index: ", i, "\nWanted: ", test.result[f], "\nGot:    ", result)
 			}
+		}
+	}
+}
+
+func TestWeekday(t *testing.T) {
+	tests := []struct {
+		delta int
+		day   Weekday
+		name  string
+	}{
+		{0, Shanbe, "شنبه"},
+		{1, IekShanbe, "یک‌شنبه"},
+		{1, YekShanbe, "یک‌شنبه"},
+		{2, DoShanbe, "دوشنبه"},
+		{3, SeShanbe, "سه‌شنبه"},
+		{4, ChaharShanbe, "چهارشنبه"},
+		{5, PanjShanbe, "پنج‌شنبه"},
+		{6, Jome, "جمعه"},
+	}
+
+	// 2001-02-03 is a Saturday, which maps to Jalaali Shanbe (شنبه).
+	iran, _ := time.LoadLocation("Asia/Tehran")
+	j := From(time.Date(2001, 2, 3, 0, 0, 0, 0, iran))
+
+	for _, test := range tests {
+		jj := From(j.AddDate(0, 0, test.delta))
+		if got := jj.Weekday(); got != test.day || got.String() != test.name {
+			t.Errorf("Weekday(%d).String() = %q, want %q", test.day, got, test.name)
 		}
 	}
 }

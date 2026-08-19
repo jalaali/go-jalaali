@@ -102,7 +102,7 @@ func (j Jalaali) jAppendFormat(b []byte, layout string) ([]byte, error) {
 		case stdZeroMonth:
 			b = appendInt(b, int(month), 2)
 		case stdWeekDay, stdLongWeekDay:
-			s := Weekday((int(j.Weekday()) + 1) % 7).String()
+			s := j.Weekday().String()
 			b = append(b, s...)
 		case stdDay:
 			b = appendInt(b, day, 0)

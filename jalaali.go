@@ -5,12 +5,6 @@ import (
 	"time"
 )
 
-// A simple wrapper around Golang default time package. You have all the functionality of
-// default time package and functionalities needed for Jalaali calender.
-type Jalaali struct {
-	time.Time
-}
-
 // From initialize new instance of Jalaali from a time instance.
 func From(t time.Time) Jalaali {
 	return Jalaali{t}
@@ -19,6 +13,17 @@ func From(t time.Time) Jalaali {
 // Now with return Jalaali instance of current time.
 func Now() Jalaali {
 	return From(time.Now())
+}
+
+// Jalaali is a simple wrapper around Golang default time package. You have all
+// the functionality of default time package and functionalities needed for
+// Jalaali calender.
+type Jalaali struct {
+	time.Time
+}
+
+func (j Jalaali) Weekday() Weekday {
+	return Weekday((int(j.Time.Weekday()) + 1) % 7)
 }
 
 // A Month specifies a month of the year (Farvardin = 1, ...).
