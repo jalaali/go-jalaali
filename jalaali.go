@@ -26,6 +26,10 @@ func (j Jalaali) Weekday() Weekday {
 	return Weekday((int(j.Time.Weekday()) + 1) % 7)
 }
 
+func (j Jalaali) Date() (year int, month Month, day int, err error) {
+	return ToJalaali(j.Time.Date())
+}
+
 // A Month specifies a month of the year (Farvardin = 1, ...).
 type Month int
 

@@ -203,14 +203,46 @@ func TestWeekday(t *testing.T) {
 		{6, Jome, "جمعه"},
 	}
 
-	// 2001-02-03 is a Saturday, which maps to Jalaali Shanbe (شنبه).
+	// 2026-08-15 is a Saturday, which maps to Jalaali Shanbe (شنبه).
 	iran, _ := time.LoadLocation("Asia/Tehran")
-	j := From(time.Date(2001, 2, 3, 0, 0, 0, 0, iran))
+	j := From(time.Date(2026, 8, 15, 0, 0, 0, 0, iran))
 
 	for _, test := range tests {
 		jj := From(j.AddDate(0, 0, test.delta))
 		if got := jj.Weekday(); got != test.day || got.String() != test.name {
 			t.Errorf("Weekday(%d).String() = %q, want %q", test.day, got, test.name)
+		}
+	}
+}
+
+func TestDate(t *testing.T) {
+	iran, _ := time.LoadLocation("Asia/Tehran")
+
+	tests := []struct {
+		t     time.Time
+		year  int
+		month Month
+		day   int
+	}{
+		{time.Date(2025, 3, 20, 0, 0, 0, 0, iran), 1403, 12, 30},
+		{time.Date(2026, 8, 19, 0, 0, 0, 0, iran), 1405, 5, 28},
+		{time.Date(2026, 8, 20, 0, 0, 0, 0, iran), 1405, 5, 29},
+		{time.Date(2026, 8, 21, 0, 0, 0, 0, iran), 1405, 5, 30},
+		{time.Date(2026, 8, 22, 0, 0, 0, 0, iran), 1405, 5, 31},
+	}
+
+	for _, test := range tests {
+		y, m, d, err := From(test.t).Date()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if test.year != y || test.month != m || test.day != d {
+			t.Errorf(
+				"For %s got (%d,%d,%d) want (%d,%d,%d)",
+				test.t.Format(time.RFC3339),
+				y, m, d,
+				test.year, test.month, test.day,
+			)
 		}
 	}
 }
