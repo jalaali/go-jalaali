@@ -15,6 +15,15 @@ func Now() Jalaali {
 	return From(time.Now())
 }
 
+func Date(year int, month Month, day, hour, min, sec, nsec int, loc *time.Location) (Jalaali, error) {
+	gy, gm, gd, err := ToGregorian(year, month, day)
+	if err != nil {
+		return Jalaali{}, err
+	}
+
+	return From(time.Date(gy, gm, gd, hour, min, sec, nsec, loc)), nil
+}
+
 // Jalaali is a simple wrapper around Golang default time package. You have all
 // the functionality of default time package and functionalities needed for
 // Jalaali calender.

@@ -302,3 +302,23 @@ func TestAddDate(t *testing.T) {
 		t.Errorf("AddDate(-1, -1, -1) = %v, want %v", subtracted, want)
 	}
 }
+
+func TestFromDate(t *testing.T) {
+	iran, _ := time.LoadLocation("Asia/Tehran")
+
+	j, err := Date(1405, 5, 28, 23, 45, 14, 298, iran)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	year, month, day := j.Time.Date()
+	if year != 2026 {
+		t.Errorf("Date() year = %d, want 2026", year)
+	}
+	if month != time.August {
+		t.Errorf("Date() month = %v, want August", month)
+	}
+	if day != 19 {
+		t.Errorf("Date() day = %d, want 19", day)
+	}
+}
