@@ -208,7 +208,7 @@ func TestWeekday(t *testing.T) {
 	j := From(time.Date(2026, 8, 15, 0, 0, 0, 0, iran))
 
 	for _, test := range tests {
-		jj := From(j.AddDate(0, 0, test.delta))
+		jj := j.AddDate(0, 0, test.delta)
 		if got := jj.Weekday(); got != test.day || got.String() != test.name {
 			t.Errorf("Weekday(%d).String() = %q, want %q", test.day, got, test.name)
 		}
@@ -244,5 +244,61 @@ func TestDate(t *testing.T) {
 				test.year, test.month, test.day,
 			)
 		}
+	}
+}
+
+func TestBefore(t *testing.T) {
+	iran, _ := time.LoadLocation("Asia/Tehran")
+
+	earlier := From(time.Date(2014, 8, 4, 0, 0, 0, 0, iran))
+	later := From(time.Date(2015, 1, 1, 0, 0, 0, 0, iran))
+	same := From(time.Date(2014, 8, 4, 0, 0, 0, 0, iran))
+
+	if !earlier.Before(later) {
+		t.Errorf("expected %v to be before %v", earlier, later)
+	}
+	if later.Before(earlier) {
+		t.Errorf("expected %v not to be before %v", later, earlier)
+	}
+	if earlier.Before(same) {
+		t.Errorf("expected %v not to be before equal time %v", earlier, same)
+	}
+}
+
+func TestAfter(t *testing.T) {
+	iran, _ := time.LoadLocation("Asia/Tehran")
+
+	earlier := From(time.Date(2014, 8, 4, 0, 0, 0, 0, iran))
+	later := From(time.Date(2015, 1, 1, 0, 0, 0, 0, iran))
+	same := From(time.Date(2015, 1, 1, 0, 0, 0, 0, iran))
+
+	if !later.After(earlier) {
+		t.Errorf("expected %v to be after %v", later, earlier)
+	}
+	if earlier.After(later) {
+		t.Errorf("expected %v not to be after %v", earlier, later)
+	}
+	if later.After(same) {
+		t.Errorf("expected %v not to be after equal time %v", later, same)
+	}
+}
+
+func TestAddDate(t *testing.T) {
+	iran, _ := time.LoadLocation("Asia/Tehran")
+
+	j := From(time.Date(2014, 8, 4, 0, 0, 0, 0, iran))
+
+	// Add one year, one month, and one day.
+	added := j.AddDate(1, 1, 1)
+	want := From(time.Date(2015, 9, 5, 0, 0, 0, 0, iran))
+	if !added.Equal(want) {
+		t.Errorf("AddDate(1, 1, 1) = %v, want %v", added, want)
+	}
+
+	// Negative values subtract.
+	subtracted := j.AddDate(-1, -1, -1)
+	want = From(time.Date(2013, 7, 3, 0, 0, 0, 0, iran))
+	if !subtracted.Equal(want) {
+		t.Errorf("AddDate(-1, -1, -1) = %v, want %v", subtracted, want)
 	}
 }

@@ -30,6 +30,22 @@ func (j Jalaali) Date() (year int, month Month, day int, err error) {
 	return ToJalaali(j.Time.Date())
 }
 
+func (j Jalaali) After(o Jalaali) bool {
+	return j.Time.After(o.Time)
+}
+
+func (j Jalaali) Before(o Jalaali) bool {
+	return j.Time.Before(o.Time)
+}
+
+func (j Jalaali) AddDate(years int, months int, days int) Jalaali {
+	return From(j.Time.AddDate(years, months, days))
+}
+
+func (j Jalaali) Equal(o Jalaali) bool {
+	return j.Time.Equal(o.Time)
+}
+
 // A Month specifies a month of the year (Farvardin = 1, ...).
 type Month int
 
