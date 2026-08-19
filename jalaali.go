@@ -64,6 +64,8 @@ const (
 	ChaharShanbe
 	PanjShanbe
 	Jome
+
+	YekShanbe = IekShanbe
 )
 
 var days = []string{
@@ -76,4 +78,3 @@ func (d Weekday) String() string {
 	}
 	return "%!Weekday(" + strconv.Itoa(int(d)) + ")"
 }
-
