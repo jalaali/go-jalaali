@@ -1,3 +1,4 @@
 - [ ] Add utility functions like:
   - [ ] Date: Remove hour, minute, seconds, and etc. Returns beginning of the day.
+- [ ] Add parsing capabilities.
 - [X] Fix: `Weekday` function should return `jalaali.Weekday` type.
